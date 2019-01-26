@@ -12,14 +12,10 @@ module Interceptors
     end
 
     def call
-      interceptor, step = fetch_next
-
-      while interceptor
+      while (interceptor, step = fetch_next)
         with_exception_handling(interceptor) do
           interceptor.public_send(step, context)
         end
-
-        interceptor, step = fetch_next
       end
 
       context
