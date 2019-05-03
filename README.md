@@ -27,11 +27,6 @@ TBD
 Create your interceptors by extending `Interceptors::Base` class and define one of `on_enter`, `on_leave` or `on_error` method based on your use case. Register each one of them to an `Interceptors::Executor` instance and send `#call` message on it. Implement your logic in each interceptor service per use case.
 
 
-### Building an HttpService
-
-
-### Executing a pipeline workflow
-
 ```ruby
 
 ``` 
