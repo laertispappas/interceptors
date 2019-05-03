@@ -7,6 +7,7 @@ module Interceptors
       @on_leave = DS::Stack.new
     end
 
+    # Queue operations
     def enqueue(element)
       on_enter.push(element)
     end
@@ -15,6 +16,7 @@ module Interceptors
       on_enter.pop
     end
 
+    # Stack operations
     def push(element)
       on_leave.push(element)
     end

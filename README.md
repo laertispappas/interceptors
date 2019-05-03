@@ -1,9 +1,10 @@
 # Interceptors
 
+[Pedestal](http://pedestal.io/reference/interceptors) like interceptors pipe and filter service objects in Ruby. Common use cases like http service objects or multiple steps business workflow. 
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add     this line to your application's Gemfile:
 
 ```ruby
 gem 'interceptors'
@@ -17,8 +18,23 @@ Or install it yourself as:
 
     $ gem install interceptors
 
-## Usage
+## Overview
 
+TBD
+
+## Usage examples
+
+Create your interceptors by extending `Interceptors::Base` class and define one of `on_enter`, `on_leave` or `on_error` method based on your use case. Register each one of them to an `Interceptors::Executor` instance and send `#call` message on it. Implement your logic in each interceptor service per use case.
+
+
+### Building an HttpService
+
+
+### Executing a pipeline workflow
+
+```ruby
+
+``` 
 
 ## Development
 
@@ -37,3 +53,5 @@ The gem is available as open source under the terms of the [MIT License](https:/
 ## Code of Conduct
 
 Everyone interacting in the Interceptors project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/interceptors/blob/master/CODE_OF_CONDUCT.md).
+
+## Acknowledgments
