@@ -2,9 +2,9 @@ module Interceptors
   class Executor
     attr_reader :middleware, :context
 
-    def initialize(context = nil)
+    def initialize(context = Context.new)
       @middleware = Middleware.new
-      @context = context || Context.new
+      @context = context
     end
 
     def register(interceptor)
