@@ -1,4 +1,6 @@
+require "ostruct"
+
 module Interceptors
-  class Context < Hash
+  class Context < OpenStruct
   end
 end
