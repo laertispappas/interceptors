@@ -2,16 +2,14 @@ module Interceptors
   class Executor
     attr_reader :middleware, :context
 
-    def initialize(context = Context.new)
+    def initialize(*interceptors)
       @middleware = Middleware.new
-      @context = context
+      @context = Context.new
+      register(interceptors)
     end
 
-    def register(interceptor)
-      middleware.enqueue(interceptor)
-    end
-
-    def call
+    def call(input = Context.new)
+      @context = @context.merge(input)
       while (interceptor, step = fetch_next)
         with_exception_handling(interceptor) do
           interceptor.public_send(step, context)
@@ -19,6 +17,11 @@ module Interceptors
       end
 
       context
+    end
+
+    def register(interceptors)
+      interceptors = [interceptors] unless interceptors.respond_to?(:each)
+      interceptors.each { |interceptor| middleware.enqueue(interceptor) }
     end
 
     private
