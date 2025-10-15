@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "irb"
+require "irb/completion"
+require_relative "../lib/interceptors"
+
+IRB.start
