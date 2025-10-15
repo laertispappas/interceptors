@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    interceptors (0.1.0)
+    interceptors (1.0.0)
       activesupport
       zeitwerk
 
@@ -32,6 +32,7 @@ GEM
       concurrent-ruby (~> 1.0)
     logger (1.7.0)
     minitest (5.26.0)
+    rake (13.3.0)
     rspec (3.13.1)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
@@ -57,6 +58,7 @@ PLATFORMS
 
 DEPENDENCIES
   interceptors!
+  rake
   rspec
 
 BUNDLED WITH

@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+VERSION_FILE="$ROOT_DIR/lib/interceptors/version.rb"
+GEM_NAME="interceptors"
+
+usage() {
+  cat <<USAGE
+Usage: bin/release <version>
+
+Updates ${GEM_NAME}'s version file, runs the test suite, builds the gem, and pushes it to rubygems.org.
+
+Environment requirements:
+  - git working tree must be clean
+  - bundler and rubygems creds configured (GEM_HOST_API_KEY or ~/.gem/credentials)
+  - origin remote must exist for pushes
+USAGE
+  exit 1
+}
+
+abort_with() {
+  echo "ERROR: $1" >&2
+  exit 1
+}
+
+require_clean_git() {
+  if ! git -C "$ROOT_DIR" diff --quiet || ! git -C "$ROOT_DIR" diff --cached --quiet; then
+    abort_with "git working tree has uncommitted changes"
+  fi
+}
+
+update_version_file() {
+  local version="$1"
+  ruby <<RUBY
+version_file = "$VERSION_FILE"
+new_version = "$version"
+
+content = File.read(version_file)
+updated = content.gsub(/VERSION\\s*=\\s*"[\\d\\.]+"/) { |match| %(VERSION = "#{new_version}") }
+
+if updated == content
+  abort "Failed to update version constant in \#{version_file}"
+end
+
+File.write(version_file, updated)
+RUBY
+}
+
+run_tests() {
+  bundle exec rspec
+}
+
+release_gem() {
+  bundle exec rake release
+}
+
+main() {
+  local version="${1:-}"
+  [[ -n "$version" ]] || usage
+
+  if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    abort_with "version must be in the format X.Y.Z (got '$version')"
+  fi
+
+  require_clean_git
+
+  echo "Updating version to ${version}..."
+  update_version_file "$version"
+
+  echo "Running test suite..."
+  run_tests
+
+  git -C "$ROOT_DIR" add "$VERSION_FILE"
+  git -C "$ROOT_DIR" commit -m "Bump version to ${version}"
+
+  echo "Releasing ${GEM_NAME} version ${version}..."
+  release_gem
+
+  echo "Release complete."
+}
+
+main "$@"
