@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    interceptors (1.0.1)
+    interceptors (1.0.2)
       activesupport
       zeitwerk
 
