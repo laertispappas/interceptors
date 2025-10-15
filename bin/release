@@ -72,6 +72,9 @@ main() {
   run_tests
 
   git -C "$ROOT_DIR" add "$VERSION_FILE"
+  if [[ -f "$ROOT_DIR/Gemfile.lock" ]] && ! git -C "$ROOT_DIR" diff --quiet -- Gemfile.lock; then
+    git -C "$ROOT_DIR" add "$ROOT_DIR/Gemfile.lock"
+  fi
   git -C "$ROOT_DIR" commit -m "Bump version to ${version}"
 
   echo "Releasing ${GEM_NAME} version ${version}..."
