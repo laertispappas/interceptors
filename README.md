@@ -143,6 +143,48 @@ ActiveSupport::Notifications.subscribe("use_case.finish") do |_name, _start, _fi
 end
 ```
 
+### Writing custom interceptors
+
+Interceptors respond to three optional hooks:
+
+- `before(ctx)` runs before the next step and can mutate the context or raise to halt execution.
+- `around(ctx) { |ctx| ... }` wraps the remainder of the pipeline; call `yield ctx` to continue or return a `Result` to short-circuit.
+- `after(ctx, result)` executes after the inner handler returns; return value is ignored unless you return a new `Result`.
+
+To build your own interceptor:
+
+```ruby
+class AuditInterceptor < Interceptors::Interceptor
+  def before(ctx)
+    AuditTrail.write(event: "start", use_case: ctx[:use_case])
+  end
+
+  def around(ctx)
+    super
+  rescue => e
+    AuditTrail.write(event: "error", use_case: ctx[:use_case], error: e.class.name)
+    raise
+  end
+
+  def after(_ctx, result)
+    AuditTrail.write(event: "finish", ok: result.ok?)
+    result
+  end
+end
+
+class ProcessPayment < Interceptors::UseCase
+  use AuditInterceptor.new
+
+  # ...
+end
+```
+
+Checklist for custom interceptors:
+
+1. Subclass `Interceptors::Interceptor` (or include behavior manually) and implement whichever hooks you need.
+2. Ensure `around` always yields or returns an `Interceptors::Result` to keep the pipeline consistent.
+3. Register the interceptor with `use` on your use case, or reuse it across multiple use cases.
+
 For Rails controllers, include the responder helper:
 
 ```ruby
