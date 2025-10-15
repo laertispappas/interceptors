@@ -116,6 +116,25 @@ else
 end
 ```
 
+### Using the mixin instead of inheritance
+
+If you prefer not to inherit from `Interceptors::UseCase`, include the mixin to add the same DSL and runtime behaviour to any PORO:
+
+```ruby
+class RefundOrder
+  include Interceptors::UseCaseMixin
+
+  use Interceptors::LoggingInterceptor.new
+
+  def execute(ctx)
+    refund = RefundProcessor.call!(order_id: ctx[:order_id])
+    Interceptors::Result.ok(refund)
+  rescue RefundProcessor::Error => e
+    Interceptors::Result.err(Interceptors::AppError.new(e.message, code: "refund_failed"))
+  end
+end
+```
+
 Instrument use cases with ActiveSupport:
 
 ```ruby
