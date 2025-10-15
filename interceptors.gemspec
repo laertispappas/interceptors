@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "Interceptor-driven use case toolkit for Ruby and Rails applications."
   spec.description   = "Interceptors provides a production-ready pattern for building use case objects with consistent results, interceptor pipelines, and instrumentation."
-  spec.homepage      = "https://github.com/your-org/interceptors"
+  spec.homepage      = "https://github.com/laertispappas/interceptors"
   spec.license       = "MIT"
 
   spec.required_ruby_version = Gem::Requirement.new(">= 3.0")
